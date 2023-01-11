@@ -34,7 +34,10 @@ module "lambda_layer_s3" {
   description         = "Lambda layer for the lambda function"
   compatible_runtimes = ["python3.8"]
 
-  source_path = "./src/lambda-layer"
+  source_path = [{
+    path             = "${path.module}/src/lambda-layer"
+    pip_requirements = true
+  }]
 
   store_on_s3 = true
   s3_bucket   = aws_s3_bucket.bucket.id

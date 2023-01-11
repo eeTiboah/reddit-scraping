@@ -35,7 +35,6 @@ module "lambda_layer_s3" {
 
   layer_name          = "lambda-layer-s3"
   description         = "Lambda layer for the lambda function"
-  runtime             = "python3.8"
   compatible_runtimes = ["python3.8"]
 
   source_path = [{

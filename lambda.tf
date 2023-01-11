@@ -1,7 +1,7 @@
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "gitTerrabucket-100"
+  bucket        = "gitterrabucket-100"
   force_destroy = true
 }
 

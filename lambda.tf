@@ -1,13 +1,8 @@
 
 
-resource "aws_s3_bucket" "bucket" {
-  bucket        = "bucket-with-lambda-100"
-  force_destroy = true
-}
-
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
-  version       = "2.33.0"
+  version       = ">=2.33.0"
   
 
   function_name = "web-scraper"
@@ -17,7 +12,7 @@ module "lambda_function" {
 
   source_path = "${path.module}/src/lambda-function"
   layers = [
-    module.lambda_layer_s3.lambda_layer_arn,
+    module.lambda_layer_s3.lambda_layer_arn
   ]
   store_on_s3 = false
   timeout     = 120
@@ -34,7 +29,7 @@ module "lambda_function" {
 
 module "lambda_layer_s3" {
   source = "terraform-aws-modules/lambda/aws"
-  version       = "2.33.0"
+  version       = ">=2.33.0"
 
   create_layer = true
 
@@ -47,7 +42,4 @@ module "lambda_layer_s3" {
     pip_requirements = true
     prefix_in_zip = "python"
   }]
-
-  store_on_s3 = true
-  s3_bucket   = aws_s3_bucket.bucket.id
 }

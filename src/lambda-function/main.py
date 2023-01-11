@@ -8,11 +8,12 @@ def handler(event, context):
     ssm = boto3.client('ssm')
     client_id = ssm.get_parameter(Name='/reddit/client/id', WithDecryption=True)        
     secret_key = ssm.get_parameter(Name='/reddit/secret/key', WithDecryption=True)        
+    user_agent = ssm.get_parameter(Name='/reddit/user/agent', WithDecryption=True)        
 
     reddit = praw.Reddit(
-    client_id="2ywwZVTCshgg8-wOjLrI0w",
-    client_secret="osScJqaHt8Ugnf2UBuGarjgFgucBAA",
-    user_agent="gitTerraform",
+    client_id=client_id,
+    client_secret=secret_key,
+    user_agent=user_agent,
     )
 
     posts=[]

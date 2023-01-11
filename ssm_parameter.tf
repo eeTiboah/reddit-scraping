@@ -13,9 +13,20 @@ resource "aws_ssm_parameter" "client" {
 
 resource "aws_ssm_parameter" "secret" {
   name        = "/reddit/secret/key"
-  description = "The parameter description"
+  description = "The secret key of app"
   type        = "SecureString"
   value       = var.secret_key
+
+  tags = {
+    environment = "production"
+  }
+}
+
+resource "aws_ssm_parameter" "agent" {
+  name        = "/reddit/user/agent"
+  description = "The user agent of app"
+  value       = var.user_agent
+  type        = "SecureString"
 
   tags = {
     environment = "production"

@@ -15,12 +15,12 @@ module "lambda_function" {
   handler       = "main.handler"
   runtime       = "python3.9"
 
-  source_path = "${path.module}/src/main"
+  source_path = "${path.module}/src/main.py"
   layers = [
     module.lambda_layer_s3.lambda_layer_arn
   ]
-  # store_on_s3 = true
-  # s3_bucket   = aws_s3_bucket.bucket.id
+  store_on_s3 = true
+  s3_bucket   = aws_s3_bucket.bucket.id
 
   tags = {
     Pattern = "terraform-lambda"
@@ -33,8 +33,8 @@ module "lambda_layer_s3" {
   version = "~>4.0"
 
   create_layer = true
-  # store_on_s3  = true
-  # s3_bucket    = aws_s3_bucket.bucket.id
+  store_on_s3  = true
+  s3_bucket    = aws_s3_bucket.bucket.id
 
   layer_name          = "lambda-layer-s3"
   description         = "Lambda layer for the lambda function"
@@ -42,7 +42,7 @@ module "lambda_layer_s3" {
 
   runtime = "python3.9"
   source_path = [{
-    path             = "${path.module}/src/lambda-layer"
+    path             = "${path.module}/dependencies"
     pip_requirements = true
     prefix_in_zip    = "python"
   }]

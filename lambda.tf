@@ -40,7 +40,6 @@ module "lambda_layer_s3" {
   description         = "Lambda layer for the lambda function"
   compatible_runtimes = ["python3.9"]
 
-  runtime = "python3.9"
   source_path = [{
     path             = "${path.module}/dependencies"
     pip_requirements = true

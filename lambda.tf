@@ -10,7 +10,7 @@ module "lambda_function" {
   version = "~>4.0"
 
 
-  function_name = "scrape func"
+  function_name = "scrape-func"
   description   = "lambda func description"
   handler       = "main.handler"
   runtime       = "python3.9"

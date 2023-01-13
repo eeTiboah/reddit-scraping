@@ -12,7 +12,6 @@ env:
 jobs:
   Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
-    env:
      
     steps:
       - name: Git checkout

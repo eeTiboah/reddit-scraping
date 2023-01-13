@@ -6,13 +6,13 @@ on: push
 permissions:
       id-token: write 
       contents: read 
-      pull-requests: write
+      # pull-requests: write
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
 jobs:
-  deploy:
+  Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
-
+     
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -27,11 +27,25 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.5
+  Terraform-Plan:
+    needs: [Checkout-and-Setup-Terraform]
+    runs-on: ubuntu-latest
+     
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
+       
 
       - name: Terraform Init
         id: init
@@ -39,20 +53,39 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+       
 
       - name: Terraform Validate
         id: validate
         run: terraform validate 
+       
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan 
+        run: 
+          terraform plan 
+       
         continue-on-error: false
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+    
+
+  Terraform-Apply:
+    needs: [ Terraform-Plan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -var-file=./variables/dev.tfvars -input=false
+       

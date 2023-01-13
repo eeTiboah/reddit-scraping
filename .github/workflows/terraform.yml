@@ -12,6 +12,8 @@ env:
 jobs:
   Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
     steps:
       - name: Git checkout
         uses: actions/checkout@v3

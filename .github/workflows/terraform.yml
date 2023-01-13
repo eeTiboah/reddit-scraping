@@ -28,8 +28,6 @@ jobs:
           terraform_version: 1.2.5
   Terraform-Plan:
     runs-on: ubuntu-latest
-    env:
-      working-directory: terraform
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -60,7 +58,7 @@ jobs:
         id: plan
         run: terraform plan 
         continue-on-error: false
-        working-directory: ${{ env.working-directory }}
+        
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
@@ -69,8 +67,7 @@ jobs:
 
   Terraform-Apply:
     runs-on: ubuntu-latest
-    env:
-      working-directory: terraform
+
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -84,4 +81,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var-file=./variables/dev.tfvars -input=false
-        working-directory: ${{ env.working-directory }}
+       

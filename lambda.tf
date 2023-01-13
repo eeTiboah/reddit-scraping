@@ -10,12 +10,12 @@ module "lambda_function" {
   version = "~>4.0"
 
 
-  function_name = "web-scraper"
-  description   = "Scrape reddit data"
+  function_name = var.lambda_name
+  description   = "lambda func description"
   handler       = "main.handler"
   runtime       = "python3.9"
 
-  source_path = "${path.module}/src/main.py"
+  source_path = "${path.module}/src/lambda-function/main.py"
   layers = [
     module.lambda_layer_s3.lambda_layer_arn
   ]
@@ -23,10 +23,11 @@ module "lambda_function" {
   s3_bucket   = aws_s3_bucket.bucket.id
 
   tags = {
-    Pattern = "terraform-lambda"
     Module  = "lambda_function"
   }
 }
+
+
 
 module "lambda_layer_s3" {
   source  = "terraform-aws-modules/lambda/aws"
@@ -48,7 +49,6 @@ module "lambda_layer_s3" {
   }]
 
   tags = {
-    Pattern = "terraform-lambda-layer"
     Module  = "lambda_layer"
   }
 }

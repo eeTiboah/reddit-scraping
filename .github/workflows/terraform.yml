@@ -20,7 +20,7 @@ jobs:
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup Terraform
@@ -46,7 +46,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan 
+        run: terraform plan -var-file=./variables/dev.tfvars
         continue-on-error: false
 
       - name: Terraform Plan Status
@@ -55,4 +55,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -var-file=./variables/dev.tfvars -input=false

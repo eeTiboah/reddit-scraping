@@ -12,7 +12,8 @@ env:
 jobs:
   Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
-     
+    env:
+      working-directory: terraform
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -30,7 +31,8 @@ jobs:
   Terraform-Plan:
     needs: [Checkout-and-Setup-Terraform]
     runs-on: ubuntu-latest
-     
+    env:
+      working-directory: terraform
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -45,7 +47,6 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-       
 
       - name: Terraform Init
         id: init
@@ -53,18 +54,18 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
-       
+        working-directory: ${{ env.working-directory }}
 
       - name: Terraform Validate
         id: validate
         run: terraform validate 
-       
+        working-directory: ${{ env.working-directory }}
 
       - name: Terraform Plan
         id: plan
         run: 
           terraform plan 
-       
+        working-directory: ${{ env.working-directory }}
         continue-on-error: false
 
       - name: Terraform Plan Status
@@ -75,6 +76,8 @@ jobs:
   Terraform-Apply:
     needs: [ Terraform-Plan]
     runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -88,4 +91,4 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var-file=./variables/dev.tfvars -input=false
-       
+        working-directory: ${{ env.working-directory }}

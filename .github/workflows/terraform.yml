@@ -6,13 +6,12 @@ on: push
 permissions:
       id-token: write 
       contents: read 
-      pull-requests: write
+      # pull-requests: write
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
 jobs:
-  deploy:
+  Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
-
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -27,6 +26,19 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.5
+  Terraform-Plan:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform fmt
         id: fmt
@@ -48,11 +60,28 @@ jobs:
         id: plan
         run: terraform plan -var-file=./variables/dev.tfvars
         continue-on-error: false
+        working-directory: ${{ env.working-directory }}
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+    
+
+  Terraform-Apply:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from AWS account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve -var-file=./variables/dev.tfvars -input=false
+        working-directory: ${{ env.working-directory }}

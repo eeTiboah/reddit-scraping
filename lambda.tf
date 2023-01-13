@@ -37,7 +37,6 @@ module "lambda_layer_s3" {
   store_on_s3  = true
   s3_bucket    = aws_s3_bucket.bucket.id
 
-  runtime = "python3.9"
   layer_name          = "lambda-layer-s3"
   description         = "Lambda layer for the lambda function"
   compatible_runtimes = ["python3.9"]

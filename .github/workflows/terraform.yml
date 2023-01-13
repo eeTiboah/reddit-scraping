@@ -27,6 +27,7 @@ jobs:
         with:
           terraform_version: 1.2.5
   Terraform-Plan:
+    needs: [Checkout-and-Setup-Terraform]
     runs-on: ubuntu-latest
     env:
       working-directory: terraform
@@ -71,6 +72,7 @@ jobs:
     
 
   Terraform-Apply:
+    needs: [ Terraform-Plan]
     runs-on: ubuntu-latest
     env:
       working-directory: terraform

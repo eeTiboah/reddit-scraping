@@ -58,7 +58,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var-file=./variables/dev.tfvars
+        run: terraform plan 
         continue-on-error: false
         working-directory: ${{ env.working-directory }}
 

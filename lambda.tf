@@ -15,7 +15,7 @@ module "lambda_function" {
   handler       = "main.handler"
   runtime       = "python3.9"
 
-  source_path = "${path.module}/src/lambda-function/main.py"
+  source_path = "${path.module}/src/main.py"
   layers = [
     module.lambda_layer_s3.lambda_layer_arn
   ]

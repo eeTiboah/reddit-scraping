@@ -1,7 +1,7 @@
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "gitterrabucket-1000"
+  bucket        = "gitterrabucket-x-1000"
   force_destroy = true
 }
 
@@ -10,7 +10,7 @@ module "lambda_function" {
   version = "~>4.0"
 
 
-  function_name = "reddit-lambda-function"
+  function_name = "reddit-function"
   description   = "lambda func description"
   handler       = "main.handler"
   runtime       = "python3.9"

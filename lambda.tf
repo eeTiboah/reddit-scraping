@@ -10,7 +10,7 @@ module "lambda_function" {
   version = "~>4.0"
 
 
-  function_name = "scrape-reddit-func"
+  function_name = "reddit-lambda-func"
   description   = "lambda func description"
   handler       = "main.handler"
   runtime       = "python3.9"

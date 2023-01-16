@@ -32,5 +32,7 @@ No inputs.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_lambda_arn"></a> [lambda\_arn](#output\_lambda\_arn) | Lambda function ARN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

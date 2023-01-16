@@ -23,7 +23,7 @@ module "lambda_function" {
   s3_bucket   = aws_s3_bucket.bucket.id
 
   tags = {
-    Module  = "lambda_function"
+    Module = "lambda_function"
   }
 }
 
@@ -48,6 +48,6 @@ module "lambda_layer_s3" {
   }]
 
   tags = {
-    Module  = "lambda_layer"
+    Module = "lambda_layer"
   }
 }

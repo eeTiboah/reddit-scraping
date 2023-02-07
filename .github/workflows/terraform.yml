@@ -3,6 +3,9 @@ name: "Terraform action"
 
 on: 
   push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
     inputs:
       environment:
@@ -10,18 +13,18 @@ on:
         required: true
         default: prod
       
+# foood
+
 permissions:
       id-token: write 
       contents: read 
       # pull-requests: write
-env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+
 jobs:
+
   Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
-    env:
-      environment: dev
-     
+    environment: dev
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -40,9 +43,8 @@ jobs:
   Terraform-Dev-Plan:
     needs: [Checkout-and-Setup-Terraform]
     runs-on: ubuntu-latest
-    env:
-      environment: dev
-     
+    environment: dev
+
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -78,9 +80,9 @@ jobs:
  
 
   Terraform-Dev-Apply:
-    # if: github.event.inputs.environment == 'dev'
     needs: [ Terraform-Dev-Plan]
     runs-on: ubuntu-latest
+    environment: dev
     env:
       environment: dev
     steps:
@@ -105,6 +107,7 @@ jobs:
     if: github.event.inputs.environment == 'prod'
     needs: [ Terraform-Dev-Plan]
     runs-on: ubuntu-latest
+    environment: prod
     env:
       environment: prod
     steps:

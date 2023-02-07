@@ -3,6 +3,9 @@ name: "Terraform action"
 
 on: 
   push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
     inputs:
       environment:
@@ -18,13 +21,10 @@ permissions:
       # pull-requests: write
 
 jobs:
+
   Checkout-and-Setup-Terraform:
     runs-on: ubuntu-latest
     environment: dev
-    env:
-      AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-     
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -32,8 +32,8 @@ jobs:
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: "$AWS_GITHUB_ACTIONS_ROLE"
-          aws-region: "$AWS_REGION"
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -44,10 +44,7 @@ jobs:
     needs: [Checkout-and-Setup-Terraform]
     runs-on: ubuntu-latest
     environment: dev
-    env:
-      AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-     
+
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -55,8 +52,8 @@ jobs:
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: "$AWS_GITHUB_ACTIONS_ROLE"
-          aws-region: "$AWS_REGION"
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform fmt
         id: fmt
@@ -83,13 +80,11 @@ jobs:
  
 
   Terraform-Dev-Apply:
-    # if: github.event.inputs.environment == 'dev'
     needs: [ Terraform-Dev-Plan]
     runs-on: ubuntu-latest
     environment: dev
     env:
-      AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
+      environment: dev
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
@@ -97,8 +92,8 @@ jobs:
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: "$AWS_GITHUB_ACTIONS_ROLE"
-          aws-region: "$AWS_REGION"
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -114,21 +109,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     env:
-      AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      
+      environment: prod
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
-        env:
-          AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         with:
-          role-to-assume: "$AWS_GITHUB_ACTIONS_ROLE"
-          aws-region: "$AWS_REGION"
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' 

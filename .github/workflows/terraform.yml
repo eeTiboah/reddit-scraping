@@ -8,7 +8,7 @@ on:
       environment:
         description: "Deploy to production"
         required: true
-        default: environment
+        default: prod
       
 permissions:
       id-token: write 
@@ -117,7 +117,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Apply
-        if: github.event.inputs.environment == 'prod'
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform init

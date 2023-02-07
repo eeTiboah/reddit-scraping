@@ -46,6 +46,8 @@ jobs:
     needs: [Checkout-and-Setup-Dev-Terraform]
     runs-on: ubuntu-latest
     environment: dev
+    env:
+      environment: "dev"
 
     steps:
       - name: Git checkout
@@ -129,7 +131,8 @@ jobs:
     needs: [Checkout-and-Setup-Prod-Terraform]
     runs-on: ubuntu-latest
     environment: prod
-
+    env:
+      environment: "prod"
     steps:
       - name: Git checkout
         uses: actions/checkout@v3

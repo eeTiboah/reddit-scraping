@@ -78,6 +78,7 @@ jobs:
  
 
   Terraform-Dev-Apply:
+    # if: github.event.inputs.environment == 'dev'
     needs: [ Terraform-Dev-Plan]
     runs-on: ubuntu-latest
     env:

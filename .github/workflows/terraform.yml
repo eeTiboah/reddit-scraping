@@ -8,7 +8,7 @@ on:
       environment:
         description: "Deploy to production"
         required: true
-        default: environment
+        default: prod
       
 permissions:
       id-token: write 

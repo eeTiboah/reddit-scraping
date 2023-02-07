@@ -66,7 +66,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: | 
-          terraform init
+          terraform init -backend-config="bucket=github-openid-terraform-1000" -backend-config="region=${AWS_REGION}"
           terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
        
 
@@ -105,9 +105,7 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          terraform init
-          terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -input=false
   
   Checkout-and-Setup-Prod-Terraform:
     runs-on: ubuntu-latest
@@ -151,7 +149,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          terraform init
+          terraform init -backend-config="bucket=cloudprojbucketstate" -backend-config="region=${AWS_REGION}"
           terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
        
 
@@ -192,7 +190,5 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' 
-        run: |
-          terraform init
-          terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -input=false
        

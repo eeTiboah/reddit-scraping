@@ -8,10 +8,4 @@ variable "lambda_bucket" {
 }
 
 
-variable "backend" {
-    type = map
-    default =  {
-        "env": "github-openid-terraform-1000"
-        "prod": "cloudprojbucketstate"
-    }
-}
+

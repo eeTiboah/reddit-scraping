@@ -5,10 +5,10 @@ on:
   push:
   workflow_dispatch:
     inputs:
-      deploy:
+      environment:
         description: "Deploy to production"
         required: true
-        default: 'Staging'
+        default: environment
       
 permissions:
       id-token: write 
@@ -101,7 +101,7 @@ jobs:
           
        
   Terraform-Prod-Apply:
-    if: github.event.inputs.deploy == 'Production'
+    if: github.event.inputs.environment == 'prod'
     needs: [ Terraform-Dev-Plan]
     runs-on: ubuntu-latest
     env:

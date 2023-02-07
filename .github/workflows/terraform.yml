@@ -8,7 +8,7 @@ on:
       deploy:
         description: "Deploy to production"
         required: true
-        default: 'Production'
+        default: 'Staging'
       
 permissions:
       id-token: write 
@@ -96,8 +96,9 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform init
-          terraform workspace new ${{env.environment}}
-          terraform workspace select ${{env.environment}} && terraform apply -auto-approve -input=false
+          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
+          terraform apply -auto-approve -input=false
+          
        
   Terraform-Prod-Apply:
     if: github.event.inputs.deploy == 'Production'

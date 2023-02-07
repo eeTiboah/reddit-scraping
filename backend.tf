@@ -1,11 +1,5 @@
 
 
-# terraform {
-#   backend "s3" {}
-# }
-
-# backend configuration
-
 terraform {
   backend "s3" {
     bucket = "github-openid-terraform-1000"

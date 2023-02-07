@@ -32,8 +32,8 @@ jobs:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
         with:
-          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
-          aws-region: $aws-region
+          role-to-assume: AWS_GITHUB_ACTIONS_ROLE
+          aws-region: aws-region
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -56,8 +56,8 @@ jobs:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
         with:
-          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
-          aws-region: $aws-region
+          role-to-assume: AWS_GITHUB_ACTIONS_ROLE
+          aws-region: aws-region
 
       - name: Terraform fmt
         id: fmt
@@ -99,8 +99,8 @@ jobs:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
         with:
-          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
-          aws-region: $aws-region
+          role-to-assume: AWS_GITHUB_ACTIONS_ROLE
+          aws-region: aws-region
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -126,8 +126,8 @@ jobs:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
         with:
-          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
-          aws-region: $aws-region
+          role-to-assume: AWS_GITHUB_ACTIONS_ROLE
+          aws-region: aws-region
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' 

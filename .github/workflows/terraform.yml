@@ -29,10 +29,9 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         env:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         with:
           role-to-assume: '${AWS_GITHUB_ACTIONS_ROLE}'
-          aws-region: '${AWS_REGION}'
+          aws-region: "us-east-1"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -52,10 +51,9 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         env:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         with:
           role-to-assume: '${AWS_GITHUB_ACTIONS_ROLE}'
-          aws-region: '${AWS_REGION}'
+          aws-region: "us-east-1"
 
       - name: Terraform fmt
         id: fmt
@@ -94,10 +92,9 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         env:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         with:
           role-to-assume: '${AWS_GITHUB_ACTIONS_ROLE}'
-          aws-region: '${AWS_REGION}'
+          aws-region: "us-east-1"
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -120,10 +117,9 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         env:
           AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
         with:
           role-to-assume: '${AWS_GITHUB_ACTIONS_ROLE}'
-          aws-region: '${AWS_REGION}'
+          aws-region: "us-east-1"
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' 

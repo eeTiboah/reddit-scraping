@@ -20,6 +20,7 @@ def handler(event, context):
     posts=[]
 
     hot_posts = reddit.subreddit('MachineLearning').hot(limit=10)
+    # p
     for post in hot_posts:
         posts.append(post.title)
 

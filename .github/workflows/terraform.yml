@@ -65,7 +65,9 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: | 
+          terraform init
+          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
        
 
       - name: Terraform Validate
@@ -105,7 +107,6 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform init
-          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
           terraform apply -auto-approve -input=false
   
   Checkout-and-Setup-Prod-Terraform:
@@ -149,7 +150,9 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: |
+          terraform init
+          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
        
 
       - name: Terraform Validate
@@ -191,6 +194,5 @@ jobs:
         if: github.ref == 'refs/heads/main' 
         run: |
           terraform init
-          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
           terraform apply -auto-approve -input=false
        

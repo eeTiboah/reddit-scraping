@@ -116,10 +116,8 @@ jobs:
           role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Require Approval
-        if: github.event.inputs.environment == 'prod'
-
       - name: Terraform Apply
+        if: github.event.inputs.environment == 'prod'
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           terraform init

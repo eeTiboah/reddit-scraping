@@ -11,7 +11,7 @@ module "lambda_function" {
 
 
   function_name = "reddit-function-web-scrape"
-  description   = "lambda functio to scrape reddit data"
+  description   = "lambda functio to scrape reddit data "
   handler       = "main.handler"
   runtime       = "python3.9"
 

@@ -27,7 +27,7 @@ module "lambda_function" {
   }
 }
 
-
+# more commands to run for the terraform
 
 module "lambda_layer_s3" {
   source  = "terraform-aws-modules/lambda/aws"
@@ -38,7 +38,7 @@ module "lambda_layer_s3" {
   s3_bucket    = aws_s3_bucket.bucket.id
 
   layer_name          = "lambda-layer-s3"
-  description         = "Lambda layer for the lambda function"
+  description         = "Lambda layer for the lambda function to scrape reddit data"
   compatible_runtimes = ["python3.9"]
 
   source_path = [{

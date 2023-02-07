@@ -10,6 +10,9 @@ repos:
   - name: Terraform validate
     id: terraform_validate
 
+  # - name: Terraform tfsec
+  #   id: terraform_tfsec
+
   - name: Terraform documentation
     id: terraform_docs
     args:

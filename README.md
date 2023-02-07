@@ -35,4 +35,6 @@ No inputs.
 | Name | Description |
 |------|-------------|
 | <a name="output_lambda_arn"></a> [lambda\_arn](#output\_lambda\_arn) | Lambda function ARN |
+| <a name="output_lambda_date"></a> [lambda\_date](#output\_lambda\_date) | Lambda function date |
+| <a name="output_lambda_url"></a> [lambda\_url](#output\_lambda\_url) | Lambda function URL |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

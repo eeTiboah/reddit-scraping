@@ -117,7 +117,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' 
         run: |
           terraform init
           terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}

@@ -152,7 +152,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: |
-          terraform init -backend-config="bucket=cloudprojbucketstate" -backend-config="region=${AWS_REGION}"
+          terraform init -backend-config="bucket=cloudprojbucketstate" -backend-config="region=${{secrets.AWS_REGION}}"
           terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
        
 

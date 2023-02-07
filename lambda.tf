@@ -1,7 +1,7 @@
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "gitterrabucket-x-1000"
+  bucket        = "terraformbucket-x-1000"
   force_destroy = true
 }
 
@@ -10,8 +10,8 @@ module "lambda_function" {
   version = "~>4.0"
 
 
-  function_name = "reddit-function"
-  description   = "lambda func description"
+  function_name = "reddit-function-web-scrape"
+  description   = "lambda functio to scrape reddit data"
   handler       = "main.handler"
   runtime       = "python3.9"
 
@@ -27,7 +27,6 @@ module "lambda_function" {
   }
 }
 
-# more commands to run for the terraform
 
 module "lambda_layer_s3" {
   source  = "terraform-aws-modules/lambda/aws"

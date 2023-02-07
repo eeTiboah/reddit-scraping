@@ -28,9 +28,12 @@ jobs:
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+        env:
+          AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
+        with:
+          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
+          aws-region: $aws-region
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -49,9 +52,12 @@ jobs:
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+        env:
+          AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
+        with:
+          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
+          aws-region: $aws-region
 
       - name: Terraform fmt
         id: fmt
@@ -89,9 +95,12 @@ jobs:
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+        env:
+          AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
+        with:
+          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
+          aws-region: $aws-region
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -113,9 +122,12 @@ jobs:
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+        env:
+          AWS_GITHUB_ACTIONS_ROLE: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
+        with:
+          role-to-assume: $AWS_GITHUB_ACTIONS_ROLE
+          aws-region: $aws-region
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' 

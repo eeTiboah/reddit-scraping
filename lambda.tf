@@ -1,7 +1,7 @@
 
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "terraformbucket-x-1000"
+  bucket        = lookup(var.lambda_bucket, terraform.workspace)
   force_destroy = true
 }
 

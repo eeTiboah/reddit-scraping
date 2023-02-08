@@ -108,8 +108,8 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: | 
-        terraform init
-        terraform apply -auto-approve -input=false
+          terraform init
+          terraform apply -auto-approve -input=false
   
   Checkout-and-Setup-Prod-Terraform:
     runs-on: ubuntu-latest

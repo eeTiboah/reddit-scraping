@@ -1,0 +1,52 @@
+name: Terraform Apply Workflow
+
+on:
+  workflow_call:
+    inputs:
+      # config-path:
+      #   required: true
+      #   type: string
+      # account-id:
+      #   required: true
+      #   type: string
+      env:
+        required: true
+        type: string
+    secrets:
+      accountID:
+        required: true
+      roleName:
+        required: true
+      region:
+        required: true
+
+jobs:
+  apply_workflow:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      working-directory: terraform
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials from AWS account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.accountID }}:role/${{ secrets.roleName }}
+        aws-region: ${{ secrets.region }}
+
+    - name: Terraform Init
+      id: init
+      working-directory: ${{ env.working-directory }}
+      run: |
+        terraform init && terraform validate
+        terraform workspace select ${{inputs.env}} || terraform workspace new ${{inputs.env}}
+
+    - name: Terraform Apply
+      id: apply
+      run: |
+        terraform init
+        terraform workspace select ${{inputs.env}}
+        terraform apply -auto-approve -input=false -var-file="../variables/${{inputs.env}}.tfvars"
+      working-directory: ${{ env.working-directory }}

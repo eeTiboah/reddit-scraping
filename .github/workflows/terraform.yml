@@ -1,203 +1,59 @@
 
 name: "Terraform action"
 
-on: 
-  push:
-    branches:
-      - main
-  pull_request:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Deploy to production"
-        required: true
-        default: prod
+on: push
       
-# foood
-
 permissions:
       id-token: write 
       contents: read 
       pull-requests: write
 
 jobs:
-
-  Checkout-and-Setup-Dev-Terraform:
+  Terraform-Security-Scan:
     runs-on: ubuntu-latest
-    environment: dev
     steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.2.5
-
-  
-
-  Terraform-Dev-Plan:
-    needs: [Checkout-and-Setup-Dev-Terraform]
-    runs-on: ubuntu-latest
-    environment: dev
-    env:
-      environment: "dev"
-
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -check
-        continue-on-error: true
-       
-
-      - name: Terraform Init
-        id: init
-        run: | 
-          terraform init -backend-config="bucket=github-openid-terraform-1000" -backend-config="region=${AWS_REGION}"
-          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
-       
-
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate 
-
       - name: Terraform tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           github_token: ${{ github.token }}
-       
+        continue-on-error: true               #TODO 
 
-      - name: Terraform Plan
-        id: plan
-        run: 
-          terraform plan 
-       
-        continue-on-error: false
+  Terraform-Dev-Plan:
+    needs: [ Terraform-Security-Scan ]
+    uses: ./.github/workflows/plan.yaml
+    with:
+      env: "dev"
+    secrets:
+      accountID: ${{ secrets.ACCOUNT_ID }}
+      roleName: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+      region: ${{ secrets.AWS_REGION }}
 
   Terraform-Dev-Apply:
     needs: [ Terraform-Dev-Plan]
-    runs-on: ubuntu-latest
-    environment: dev
-    env:
-      environment: dev
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
+    uses: ./.github/workflows/apply.yaml
+    with:
+      env: "dev"
+    secrets:
+      accountID: ${{ secrets.ACCOUNT_ID }}
+      roleName: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+      region: ${{ secrets.AWS_REGION }}
 
-      - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
+  # Terraform-Prod-Plan:
+  #   needs: [ Terraform-Dev-Apply]
+  #   uses: ./.github/workflows/plan.yaml
+  #   with:
+  #     env: "prod"
+  #   secrets:
+  #     accountID: ${{ secrets.PROD_ACCOUNT_ID }}
+  #     roleName: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+  #     region: ${{ secrets.AWS_REGION }}
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: | 
-          terraform init
-          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
-          terraform apply -auto-approve -input=false
-  
-  Checkout-and-Setup-Prod-Terraform:
-    runs-on: ubuntu-latest
-    environment: prod
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.2.5
-
-  Terraform-Prod-Plan:
-    needs: [Checkout-and-Setup-Prod-Terraform]
-    runs-on: ubuntu-latest
-    environment: prod
-    env:
-      environment: "prod"
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -check
-        continue-on-error: true
-       
-
-      - name: Terraform Init
-        id: init
-        run: |
-          terraform init -backend-config="bucket=cloudprojbucketstate" -backend-config="region=${{secrets.AWS_REGION}}"
-          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
-       
-
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate 
-       
-      - name: Terraform tfsec
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
-        with:
-          github_token: ${{ github.token }}
-
-      - name: Terraform Plan
-        id: plan
-        run: 
-          terraform plan 
-       
-        continue-on-error: false
-
-          
-       
-  Terraform-Prod-Apply:
-    if: github.event.inputs.environment == 'prod'
-    needs: [ Terraform-Prod-Plan]
-    runs-on: ubuntu-latest
-    environment: prod
-    env:
-      environment: prod
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v3
-
-      - name: Configure AWS credentials from AWS account
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' 
-        run: |
-          terraform init
-          terraform workspace select ${{env.environment}} || terraform workspace new ${{env.environment}}
-          terraform apply -auto-approve -input=false
-       
+  # Terraform-Prod-Apply:
+  #   needs: [ Terraform-Prod-Plan]
+  #   uses: ./.github/workflows/apply.yaml
+  #   with:
+  #     env: "prod"
+  #   secrets:
+  #     accountID: ${{ secrets.PROD_ACCOUNT_ID }}
+  #     roleName: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE }}
+  #     region: ${{ secrets.AWS_REGION }}

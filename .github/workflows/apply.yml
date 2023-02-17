@@ -3,12 +3,6 @@ name: Terraform Apply Workflow
 on:
   workflow_call:
     inputs:
-      # config-path:
-      #   required: true
-      #   type: string
-      # account-id:
-      #   required: true
-      #   type: string
       env:
         required: true
         type: string

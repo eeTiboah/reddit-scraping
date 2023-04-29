@@ -4,9 +4,9 @@ name: "Terraform action"
 on: push
       
 permissions:
-      id-token: write 
-      contents: read 
-      pull-requests: write
+    id-token: write 
+    contents: read 
+    pull-requests: write
 
 jobs:
 
@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/plan.yml
     with:
       env: "dev"
-      aws-region: ${{ vars.region }}
+      aws-region: ${{ vars.AWS_REGION }}
     secrets:
       accountID: ${{ secrets.ACCOUNT_ID }}
       roleName: ${{ secrets.ROLE_NAME }}
@@ -38,6 +38,7 @@ jobs:
   #   uses: ./.github/workflows/apply.yml
   #   with:
   #     env: "dev"
+  #     aws-region: ${{ vars.AWS_REGION }}
   #   secrets:
   #     accountID: ${{ secrets.ACCOUNT_ID }}
   #     roleName: ${{ secrets.ROLE_NAME }}

@@ -25,6 +25,7 @@ jobs:
     uses: ./.github/workflows/plan.yml
     with:
       env: "dev"
+      aws-region: ${{ vars.region }}
     secrets:
       accountID: ${{ secrets.ACCOUNT_ID }}
       roleName: ${{ secrets.ROLE_NAME }}

@@ -6,6 +6,9 @@ on:
       env:
         required: true
         type: string
+      aws-region:
+        required: true
+        type: string
     secrets:
       accountID:
         required: true
@@ -34,7 +37,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: arn:aws:iam::${{ secrets.accountID }}:role/${{ secrets.roleName }}
-        aws-region: ${{ vars.region }}
+        aws-region: ${{ inputs.region }}
 
     - name: Terraform fmt
       id: fmt

@@ -1,0 +1,66 @@
+name: Terraform Plan Workflow
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+    secrets:
+      accountID:
+        required: true
+      roleName:
+        required: true
+      reddit_api_client_id:
+        required: true
+      reddit_api_secret_key:
+        required: true
+      reddit_api_user_agent:
+        required: true
+
+jobs:
+  plan_workflow:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
+      TF_VAR_reddit_api_client_id: ${{ secrets.reddit_api_client_id }}
+      TF_VAR_reddit_api_secret_key: ${{ secrets.reddit_api_secret_key }}
+      TF_VAR_reddit_api_user_agent: ${{ secrets.reddit_api_user_agent }}
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials from AWS account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ secrets.accountID }}:role/${{ secrets.roleName }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+      working-directory: ${{ env.working-directory }}
+
+
+    - name: Terraform Init
+      id: init
+      working-directory: ${{ env.working-directory }}
+      run: |
+        terraform init && terraform validate
+        terraform workspace select ${{inputs.env}} || terraform workspace new ${{inputs.env}}
+
+    - name: Terraform Plan
+      id: plan
+      working-directory: ${{ env.working-directory }}
+      run: |
+        terraform plan -var-file="../variables/${{inputs.env}}.tfvars"
+      
+      continue-on-error: false
+
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1

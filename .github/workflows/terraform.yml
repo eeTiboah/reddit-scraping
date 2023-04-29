@@ -22,7 +22,7 @@ jobs:
 
   Terraform-Dev-Plan:
     needs: [ Terraform-Security-Scan ]
-    uses: ./.github/workflows/plan.yaml
+    uses: ./.github/workflows/plan.yml
     with:
       env: "dev"
     secrets:
@@ -32,17 +32,17 @@ jobs:
       reddit_api_secret_key: ${{ secrets.REDDIT_API_SECRET_KEY }}
       reddit_api_user_agent: ${{ secrets.REDDIT_API_USER_AGENT }}
 
-  Terraform-Dev-Apply:
-    needs: [ Terraform-Dev-Plan]
-    uses: ./.github/workflows/apply.yaml
-    with:
-      env: "dev"
-    secrets:
-      accountID: ${{ secrets.ACCOUNT_ID }}
-      roleName: ${{ secrets.ROLE_NAME }}
-      reddit_api_client_id: ${{ secrets.REDDIT_API_CLIENT_ID }}
-      reddit_api_secret_key: ${{ secrets.REDDIT_API_SECRET_KEY }}
-      reddit_api_user_agent: ${{ secrets.REDDIT_API_USER_AGENT }}
+  # Terraform-Dev-Apply:
+  #   needs: [ Terraform-Dev-Plan]
+  #   uses: ./.github/workflows/apply.yml
+  #   with:
+  #     env: "dev"
+  #   secrets:
+  #     accountID: ${{ secrets.ACCOUNT_ID }}
+  #     roleName: ${{ secrets.ROLE_NAME }}
+  #     reddit_api_client_id: ${{ secrets.REDDIT_API_CLIENT_ID }}
+  #     reddit_api_secret_key: ${{ secrets.REDDIT_API_SECRET_KEY }}
+  #     reddit_api_user_agent: ${{ secrets.REDDIT_API_USER_AGENT }}
 
   # Checkout-and-Setup-Dev-Terraform:
   #   runs-on: ubuntu-latest

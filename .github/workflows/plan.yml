@@ -37,7 +37,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: arn:aws:iam::${{ secrets.accountID }}:role/${{ secrets.roleName }}
-        aws-region: ${{ inputs.region }}
+        aws-region: ${{ inputs.aws-region }}
 
     - name: Terraform fmt
       id: fmt
